@@ -1,10 +1,14 @@
 {
   "name": "insomnia-plugin-kong-hmac-auth",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
   "insomnia": {
     "name": "kong-hmac-auth",
-    "description": "For interfacing with Kong API Gateway using HMAC authentication. Useful for when you are using the Kong plugin: https://docs.konghq.com/hub/kong-inc/hmac-auth/"
+    "displayName": "Kong HMAC Auth",
+    "description": "For interfacing with Kong API Gateway using HMAC authentication. Useful for when you are using the Kong plugin: https://docs.konghq.com/hub/kong-inc/hmac-auth/",
+    "publisher": {
+      "name": "CK Yong"
+    }
   },
   "main": "main.js"
 }
