@@ -24,11 +24,13 @@ In the `Headers` tab, add an `Authorization` header. Press `Ctrl + Space` to ope
 ![](docs/auth_header_example.png)
 
 Click on the tag, and fill in your options.
-![](docs/template_tag.png)
+![](docs/template_tag_example.png)
 
 You should now be able to make the call, and the plugin will add the necessary headers (date, request-line, digest):
 ![](docs/call_headers_example.png)
 
 # Changelog
-## `0.0.1` 
-* Initial functionality, support `date request-line digest` format, and all supported algorithms
+### `0.0.2` 
+* Fixed faulty image in documentation.
+### `0.0.1` 
+* Initial functionality, support `date request-line digest` format, and all supported algorithms.
