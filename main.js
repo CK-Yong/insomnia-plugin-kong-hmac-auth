@@ -138,7 +138,7 @@ module.exports.requestHooks = [
 
             if (header === '@request-target') {
                 var url = new URL(context.request.getUrl());
-                var requestTarget = `${context.request.getMethod().toLowerCase()} ${url.pathname}${url.search}`;
+                var requestTarget = `${header}: ${context.request.getMethod().toLowerCase()} ${url.pathname}${url.search}`;
                 signingStringArray.push(requestTarget);
                 console.debug('Added Request-Target header to signing string', requestTarget);
                 continue; 
