@@ -2,6 +2,7 @@
   "name": "insomnia-plugin-kong-hmac-auth",
   "version": "0.0.1",
   "private": false,
+  "repository": "https://github.com/CK-Yong/insomnia-plugin-kong-hmac-auth",
   "insomnia": {
     "name": "kong-hmac-auth",
     "displayName": "Kong HMAC Auth",
