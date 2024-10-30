@@ -31,7 +31,7 @@ You should now be able to make the call, and the plugin will add the necessary h
 ![](docs/call_headers_example.png)
 
 # Changelog
-### `0.0.3`
+### `0.0.4`
 * Added header variables that can be used in the signature string.
 ### `0.0.2` 
 * Fixed faulty image in documentation.
