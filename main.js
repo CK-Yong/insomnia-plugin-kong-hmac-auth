@@ -70,8 +70,7 @@ module.exports.templateTags = [{
             displayName: 'Headers',
             description: 'The headers to include in the HMAC Auth request, in lower-case, separated by spaces.',
             type: 'string',
-            defaultValue: 'date request-line digest',
-            placeholder: 'date request-line digest'
+            defaultValue: 'date request-line digest'
         }
     ],
     async run(context, username, secret, timestamp, algorithm, httpVersion, headers) {
@@ -82,7 +81,7 @@ module.exports.templateTags = [{
         await context.store.setItem("httpVer", httpVersion);
         await context.store.setItem("headers", headers);
 
-        return 'No preview available. Header will be added when the request is sent.';
+        return `hmac username="${username}", algorithm="${algorithm}", headers="${headers}", signature="<calculated at request time>"`
     }
 }];
 

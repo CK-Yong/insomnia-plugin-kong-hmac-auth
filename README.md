@@ -31,6 +31,8 @@ You should now be able to make the call, and the plugin will add the necessary h
 ![](docs/call_headers_example.png)
 
 # Changelog
+### `0.0.5`
+* Added auth header example in the template preview.
 ### `0.0.4`
 * Added header variables that can be used in the signature string.
 ### `0.0.2` 
