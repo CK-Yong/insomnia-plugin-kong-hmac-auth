@@ -65,14 +65,22 @@ module.exports.templateTags = [{
                     value: 'HTTP/2'
                 },
             ]
+        },
+        {
+            displayName: 'Headers',
+            description: 'The headers to include in the HMAC Auth request, in lower-case, separated by spaces.',
+            type: 'string',
+            defaultValue: 'date request-line digest',
+            placeholder: 'date request-line digest'
         }
     ],
-    async run(context, username, secret, timestamp, algorithm, httpVersion) {
+    async run(context, username, secret, timestamp, algorithm, httpVersion, headers) {
         await context.store.setItem("username", username);
         await context.store.setItem("secret", secret);
         await context.store.setItem("ts", timestamp);
         await context.store.setItem("alg", algorithm);
         await context.store.setItem("httpVer", httpVersion);
+        await context.store.setItem("headers", headers);
 
         return 'No preview available. Header will be added when the request is sent.';
     }
@@ -93,6 +101,11 @@ module.exports.requestHooks = [
         var timestamp = await context.store.getItem("ts");
         var algorithm = await context.store.getItem("alg");
         var httpVersion = await context.store.getItem("httpVer");
+        var headerStr = await context.store.getItem("headers");
+
+        if (!headerStr || headerStr.length === 0) {
+            headerStr = 'date request-line digest';
+        }
 
         if (!timestamp) {
             timestamp = new Date().toUTCString();
@@ -104,16 +117,52 @@ module.exports.requestHooks = [
             return;
         }
 
-        var bodyDigest = crypto.createHash("sha256").update(context.request.getBody().text).digest("base64");
+        var headers = headerStr.split(' ');
+        console.debug('Headers to sign:', headers);
+        var signingStringArray = [];
+        for (var header of headers) {
+            if (header === 'date') {
+                signingStringArray.push(`date: ${timestamp}`);
+                context.request.setHeader("Date", timestamp);
+                console.debug('Added Date header:', timestamp);
+                continue;
+            }
+
+            if (header === 'request-line') {
+                var url = new URL(context.request.getUrl());
+                var requestLine = `${context.request.getMethod().toUpperCase()} ${url.pathname}${url.search} ${httpVersion}`;
+                signingStringArray.push(requestLine);
+                console.debug('Added Request-Line header to signing string', requestLine);
+                continue;
+            }
+
+            if (header === '@request-target') {
+                var url = new URL(context.request.getUrl());
+                var requestTarget = `${context.request.getMethod().toLowerCase()} ${url.pathname}${url.search}`;
+                signingStringArray.push(requestTarget);
+                console.debug('Added Request-Target header to signing string', requestTarget);
+                continue; 
+            }
+
+            if (header === 'digest') {
+                var bodyDigest = crypto.createHash("sha256").update(context.request.getBody().text).digest("base64");
+                signingStringArray.push(`digest: SHA-256=${bodyDigest}`);
+                context.request.setHeader("Digest", `SHA-256=${bodyDigest}`);
+                console.debug('Added Digest header:', `SHA-256=${bodyDigest}`);
+                continue;
+            }
+
+            // Not recognised header, but will be adding it as is.
+            signingStringArray.push(`${header}: ${context.request.getHeader(header)}`);
+        }
+
+        var signingString = signingStringArray.join('\n');
+
+        console.debug(signingString);
 
         var algKey = algorithm.replace('hmac-', '');
-        var signingString = `date: ${timestamp}\n${context.request.getMethod().toUpperCase()} ${new URL(context.request.getUrl()).pathname} ${httpVersion}\ndigest: SHA-256=${bodyDigest}`;
-        console.debug(signingString);
         var signature = crypto.createHmac(algKey, secret).update(signingString).digest("base64");
 
-        context.request.setHeader("Authorization", `hmac username="${username}", algorithm="${algorithm}", headers="date request-line digest", signature="${signature}"`);
-
-        context.request.setHeader("Digest", `SHA-256=${bodyDigest}`);
-        context.request.setHeader("Date", timestamp);
+        context.request.setHeader("Authorization", `hmac username="${username}", algorithm="${algorithm}", headers="${headerStr}", signature="${signature}"`);
     }
 ];

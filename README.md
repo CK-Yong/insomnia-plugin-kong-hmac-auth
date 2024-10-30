@@ -27,6 +27,7 @@ Click on the tag, and fill in your options.
 ![](docs/template_tag_example.png)
 
 You should now be able to make the call, and the plugin will add the necessary headers (date, request-line, digest):
+
 ![](docs/call_headers_example.png)
 
 # Changelog
