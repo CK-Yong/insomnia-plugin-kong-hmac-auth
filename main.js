@@ -90,8 +90,8 @@ module.exports.requestHooks = [
     async context => {
         const crypto = require('crypto');
 
-        if (!context.request.hasHeader("Authorization")) {
-            console.debug('No Authorization header found. HMAC Auth plugin is not active.')
+        if (!context.request.hasHeader("Authorization") || !context.request.getHeader('Authorization').value.startsWith('hmac')) {
+            console.debug('No HMAC Authorization header found. HMAC Auth plugin is not active.')
             return;
         }
 

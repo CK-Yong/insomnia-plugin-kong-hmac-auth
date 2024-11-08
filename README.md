@@ -31,6 +31,8 @@ You should now be able to make the call, and the plugin will add the necessary h
 ![](docs/call_headers_example.png)
 
 # Changelog
+### `0.0.6`
+* Fixed an issue where the plugin would interfere with other requests that contain the Authorization request header.
 ### `0.0.5`
 * Added auth header example in the template preview.
 ### `0.0.4`
